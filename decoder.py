@@ -57,6 +57,11 @@ def run_sampler(dec, c, beam_width=1, stochastic=False, use_unk=False):
     """
     Generate text conditioned on c
     """
+    if stochastic and beam_width > 1:
+        print ("Beam search does not support stochastic sampling. " +
+            "Setting beam_width to 1\n")
+        beam_width = 1
+
     sample, score = gen_sample(dec['tparams'], dec['f_init'], dec['f_next'],
                                c.reshape(1, dec['options']['dimctx']), dec['options'],
                                trng=dec['trng'], k=beam_width, maxlen=1000, stochastic=stochastic,
@@ -64,6 +69,7 @@ def run_sampler(dec, c, beam_width=1, stochastic=False, use_unk=False):
     text = []
     if stochastic:
         sample = [sample]
+        score = [score]
     for c in sample:
         text.append(' '.join([dec['word_idict'][w] for w in c[:-1]]))
 

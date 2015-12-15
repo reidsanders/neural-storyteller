@@ -31,7 +31,7 @@ from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
-def story(z, image_loc, k=100, bw=50, lyric=False):
+def story(z, image_loc, k=100, bw=50, lyric=False, stochastic=False):
     """
     Generate a story for an image at location image_loc
     """
@@ -62,7 +62,7 @@ def story(z, image_loc, k=100, bw=50, lyric=False):
     shift = svecs.mean(0) - z['bneg'] + z['bpos']
 
     # Generate story conditioned on shift
-    passage = decoder.run_sampler(z['dec'], shift, beam_width=bw)
+    passage = decoder.run_sampler(z['dec'], shift, beam_width=bw, stochastic=stochastic)
     print 'OUTPUT: '
     if lyric:
         for line in passage.split(','):
